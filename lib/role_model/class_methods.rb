@@ -40,5 +40,25 @@ module RoleModel
         sum + bitvalue
       } || 0
     end
+
+    # All masks we can get with role
+    # Can be usefull when we want to retrieve a user with a specific role from database
+    # Ex: User.where(roles_mask => User.possible_masks_for(:admin))
+    # => SELECT `users`.* FROM `users` WHERE `users`.`roles_mask` IN (1, 3)
+    def possible_masks_for(role)
+      role_combinations_for(role).collect do |combination|
+        self.mask_for combination
+      end
+    end
+
+    def role_combinations
+      1.upto(self.valid_roles.size).collect do |number_of_elements|
+        self.valid_roles.combination(number_of_elements).to_a
+      end.flatten(1)
+    end
+
+    def role_combinations_for(role)
+      role_combinations.select { |combination| combination.include?(role)}
+    end
   end
 end

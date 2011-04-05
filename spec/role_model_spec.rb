@@ -435,4 +435,35 @@ describe RoleModel do
     end
   end
 
+  describe ".role_combinations" do
+    it "should return 7 cominations when 3 roles are present" do
+      model_class.role_combinations.should have(7).items
+    end
+  end
+
+  describe ".role_combinations_for" do
+    it "should only return combinations including role" do
+      model_class.role_combinations_for(:foo).each do |combination|
+        combination.should include(:foo)
+      end
+    end
+
+    it "should return 4 elements when 3 roles are present, for each role" do
+      model_class.role_combinations_for(:foo).should have(4).items
+      model_class.role_combinations_for(:bar).should have(4).items
+      model_class.role_combinations_for(:third).should have(4).items
+    end
+  end
+
+  describe ".possible_masks_for" do
+    it "should return 4 elements when 3 roles are present, for each role" do
+      model_class.possible_masks_for(:foo).should have(4).items
+      model_class.possible_masks_for(:bar).should have(4).items
+      model_class.possible_masks_for(:third).should have(4).items
+    end
+
+    it "should return an array of Fixnum" do
+      model_class.possible_masks_for(:foo).each { |object| object.should be_a(Fixnum) }
+    end
+  end
 end
